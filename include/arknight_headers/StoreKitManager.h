@@ -9,11 +9,13 @@
 // #import "SKPaymentTransactionObserver.h"
 // #import "SKProductsRequestDelegate.h"
 // #import "SKStoreProductViewControllerDelegate.h"
-// #import "StoreKitReceiptRequestDelegate.h"
+// #import "StoreKitReceiptRequestDelegate-Protocol.h"
+// #import "SKProductsRequestDelegate-Protocol.h"
+// #import "NSObject-Protocol.h"
 
 @class NSArray, NSMutableArray, NSString, SKPayment;
-@class NSObject, SKStoreProductViewControllerDelegate;
-@protocol SKProductsRequestDelegate, StoreKitReceiptRequestDelegate;
+@class SKStoreProductViewControllerDelegate;
+@protocol StoreKitReceiptRequestDelegate;
 
 @interface StoreKitManager : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver, StoreKitReceiptRequestDelegate, SKStoreProductViewControllerDelegate>
 {
@@ -70,7 +72,8 @@
 // Remaining properties
 @property(readonly, copy) NSString *debugDescription;
 @property(readonly, copy) NSString *description;
-@property(readonly) unsigned long long hash;
+// @property(readonly) unsigned long long hash;
+@property(readonly) NSUInteger hash;
 @property(readonly) Class superclass;
 
 @end

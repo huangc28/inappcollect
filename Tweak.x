@@ -1,167 +1,122 @@
-#import <SpringBoard/SpringBoard.h>
-#import <StoreKit/StoreKit.h>
-// #import <arknight_headers/SplashScreen.h> 
-// #import <arknight_headers/SplashScreenController.h> 
-#import <arknight_headers/StoreKitManager.h> 
+#import "StoreKit/StoreKit.h"
+#import "FrontBoard/FBProcess.h"
 
-%hook SpringBoard
+%group Hooks
 
--(void)applicationDidFinishLaunching:(id)application {
-    %orig;
+%hook StoreKitManager
++ (void)unitySendMessage:(id)arg1 param:(id)arg2 { %log; %orig; }
++ (id)sharedManager { %log; id r = %orig; NSLog(@"DEBUG* sharedManager %@", r); return r; }
+- (void)setDeferredPayment:(SKPayment *)deferredPayment { %log; %orig; }
+- (SKPayment *)deferredPayment { %log; SKPayment * r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (void)setApplicationUserName:(NSString *)applicationUserName { %log; %orig; }
+- (NSString *)applicationUserName { %log; NSString * r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (void)setCurrentTransactions:(NSMutableArray *)currentTransactions { %log; %orig; }
+- (NSMutableArray *)currentTransactions { %log; NSMutableArray * r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (void)setProducts:(NSArray *)products { %log; %orig; }
+- (NSArray *)products { 
+    NSArray * r = %orig; 
 
-	NSLog(@"DEBUG* hello world bb");
+    NSLog(@"DEBUG* products = %@", r); 
 
-	UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"TestTitle" message:@"TestMessage" preferredStyle:UIAlertControllerStyleAlert];
-
- 	UIAlertAction *action = [
-		UIAlertAction 
-			actionWithTitle:@"OK" 
-			style:UIAlertActionStyleDefault 
-			handler:^(UIAlertAction *action){
-				NSLog(@"DEBUG* fuck you bb"); 
-
- 				NSLog(@"DEBUG* 2 i love you %@", action);
-			}
-	];
-
-    [ alertController addAction: action];
-  
-    [self.keyWindow.rootViewController presentViewController:alertController animated:YES completion:NULL];
+    return r; 
 }
+- (void)productViewControllerDidFinish:(id)arg1 { 
+    NSLog(@"DEBUG* productViewControllerDidFinish !");
 
+    
+    %orig; 
+}
+- (void)storeKitReceiptRequest:(id)arg1 validatedWithStatusCode:(int)arg2 { %log; %orig; }
+- (void)storeKitReceiptRequest:(id)arg1 validatedWithResponse:(id)arg2 { %log; %orig; }
+- (void)storeKitReceiptRequest:(id)arg1 didFailWithError:(id)arg2 { %log; %orig; }
+- (void)paymentQueue:(id)arg1 updatedDownloads:(id)arg2 { %log; %orig; }
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(id)arg1 { %log; %orig; }
+- (void)paymentQueue:(id)arg1 restoreCompletedTransactionsFailedWithError:(id)arg2 { %log; %orig; }
+- (void)paymentQueue:(id)arg1 removedTransactions:(id)arg2 { %log; %orig; }
+- (_Bool)paymentQueue:(id)arg1 shouldAddStorePayment:(id)arg2 forProduct:(id)arg3 { %log; _Bool r = %orig; NSLog(@"DEBUG* = %d", r); return r; }
+- (void)paymentQueue:(id)arg1 updatedTransactions:(id)arg2 { %log; %orig; }
+- (void)request:(id)arg1 didFailWithError:(id)arg2 { %log; %orig; }
+- (void)productsRequest:(id)arg1 didReceiveResponse:(id)arg2 { 
+    NSLog(@"DEBUG* productsRequest !");
+    
+    %orig; 
+}
+- (void)displayStoreWithProductId:(id)arg1 affiliateToken:(id)arg2 { 
+	UIAlertView *alertView = [
+		[UIAlertView alloc] initWithTitle:@"Save" message:@"displayStoreWithProductId" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+
+   	alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+
+    [alertView show];
+    NSLog(@"DEBUG* displayStoreWithProductId");
+
+    %orig; 
+}
+- (void)cancelDownloads { %log; %orig; }
+- (void)resumeDownloads { %log; %orig; }
+- (void)pauseDownloads { %log; %orig; }
+- (void)updateStorePromotionVisibility:(long long)arg1 forProductId:(id)arg2 { %log; %orig; }
+- (void)fetchStorePromotionVisibilityForProductId:(id)arg1 { %log; %orig; }
+- (id)getAllCurrentTransactions { %log; id r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (id)getAllSavedTransactions { %log; id r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (void)validateAutoRenewableReceipt:(id)arg1 withSecret:(id)arg2 isTestReceipt:(_Bool)arg3 { %log; %orig; }
+- (void)validateReceipt:(id)arg1 isTestReceipt:(_Bool)arg2 { %log; %orig; }
+- (void)finishPendingTransaction:(id)arg1 { %log; %orig; }
+- (void)finishPendingTransactions { %log; %orig; }
+- (void)purchaseProduct:(id)arg1 quantity:(int)arg2 { %log; %orig; }
+- (_Bool)canMakePayments { %log; _Bool r = %orig; NSLog(@"DEBUG* = %d", r); return r; }
+- (void)requestProductData:(id)arg1 {  
+    NSLog(@"DEBUG* requestProductData");
+
+    %orig; 
+}
+- (id)productForIdentifier:(id)arg1 { %log; id r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (void)unitySendErrorMessage:(unsigned int *)arg1 error:(id)arg2 { %log; %orig; }
+- (void)completeAndRecordTransaction:(id)arg1 { %log; %orig; }
+- (id)init { 
+    %log; 
+    id r = %orig; 
+
+    NSLog(@"DEBUG* init = %@", r); 
+	UIAlertView *alertView = [
+		[UIAlertView alloc] 
+            initWithTitle:@"init" 
+            message:@"StoreKitManager" 
+            delegate:self 
+            cancelButtonTitle:@"Cancel" 
+            otherButtonTitles:@"OK", 
+            nil
+        ];
+
+   	alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+
+    [alertView show];
+    return r; 
+}
+- (NSString *)debugDescription { %log; NSString * r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (NSString *)description { %log; NSString * r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
+- (NSUInteger )hash { %log; NSUInteger  r = %orig; NSLog(@"DEBUG* = %lu", (unsigned long)r); return r; }
+- (Class )superclass { %log; Class  r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
 %end
 
-// %hook SplashScreenController
-// %new 
-// 
-// -(void)redirectLogs { 
-//  	NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); 
-//  	NSString *documentsDirectory = [allPaths objectAtIndex:0]; 
-//  	NSString *pathForLog = [documentsDirectory stringByAppendingPathComponent:@"arknights.txt"];
-//  
-//   	freopen(
-// 	  [pathForLog cStringUsingEncoding:NSASCIIStringEncoding],
-// 	  "a+",
-// 	  stderr
-// 	);
-// 
-// 	UIAlertView *alert = [
-// 		[UIAlertView alloc]
-// 			initWithTitle:@"New path for logs:" 
-// 			message:pathForLog delegate:self 	
-// 			cancelButtonTitle:@"Ok"	
-// 			otherButtonTitles:nil
-// 	];
-// 
-// 	[alert show];
-// }
-// 
-// - (void)create:(id)arg1{
-// 	%log;
-// 
-// 	%orig;
-// 
-// 	[self performSelector:@selector(redirectLogs)];
-// 
-// 	NSLog(@"DEBUG* SplashScreenController create");
-// }
-// - (id)init{
-// 	%log;
-// 	
-// 	[self performSelector:@selector(redirectLogs)];
-// 
-// 	NSLog(@"DEBUG* SplashScreenController init");
-// 
-// 	return %orig;
-// }
-// %end
+// Detect application launch.
+// Reference github: https://github.com/Razzile/RippleBoard/blob/master/Tweak.xm
+// bundleIdentifier: 
+//   明日方舟: tw.txwy.ios.arknights 
+%hook SBMainWorkspace
 
-// %hook SplashScreen
-// - (id)initWithFrame:(struct CGRect)arg1{
-// 	
-// 	NSLog(@"DEBUG* SplashScreen initWithFrame");
-// 
-// 	return %orig;
-// }
-// %end
+-(void)applicationProcessDidLaunch:(FBProcess *)applicationProcess {
+    NSLog(@"DEBUG* applicationProcessDidLaunch %@", applicationProcess.bundleIdentifier);
 
-// _PaymentSheetState
-// _purchaseController
-// SKProductsRequest
-// SKPaymentQueue
+    %orig;
+}
 
+%end // SBMainWorkspace
+%end // Hooks
 
-// Try#1 SKProductsRequestDelegate
-//   A set of method the delegate implements so it receives the product information your app requests.
-//  Failed, might be SKProductsRequestDelegate is a protocol, not a class.
-// %hook StoreKitManager
-// -(void)redirectLogs { 
-//  	NSArray *allPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); 
-//  	NSString *documentsDirectory = [allPaths objectAtIndex:0]; 
-//  	NSString *pathForLog = [documentsDirectory stringByAppendingPathComponent:@"arknights.txt"];
-//  
-//   	freopen(
-// 	  [pathForLog cStringUsingEncoding:NSASCIIStringEncoding],
-// 	  "a+",
-// 	  stderr
-// 	);
-// 
-// 	UIAlertView *alert = [
-// 		[UIAlertView alloc]
-// 			initWithTitle:@"New path for logs:" 
-// 			message:pathForLog delegate:self 	
-// 			cancelButtonTitle:@"Ok"	
-// 			otherButtonTitles:nil
-// 	];
-// 
-// 	[alert show];
-// }
-// 
-// - (void)productsRequest:(id)arg1 didReceiveResponse:(id)arg2 {
+// %ctor gets called when executable is loaded into the memory
+%ctor {
+	NSLog(@"DEBUG* ctor!");
 
-// 	[self performSelector:@selector(redirectLogs)];
-// 
-// 	NSLog(@"DEBUG* 3 trigger product request");
-// 
-// 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Save"
-//                                                         message:@"Enter File Name"
-//                                                        delegate:self
-//                                               cancelButtonTitle:@"Cancel"
-//                                               otherButtonTitles:@"OK", nil];
-// 
-//     alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
-// 
-//     [alertView show];
-// 
-// 
-// 	%orig;
-// }
-
-// - (void)requestProductData:(id)arg1 {
-// 	%log;
-// 
-// 	[self performSelector:@selector(redirectLogs)];
-// 
-// 	NSLog(@"DEBUG* 4 trigger requestProductData");
-// 
-// 	%orig;
-// }
-// %end
-
-// Try#2 SKPaymentQueue
-// k%hook SKPaymentQueue  
-// k- (void)addPayment:(id)arg1{
-// k	NSLog(@"DEBUG* trigger add payment");
-// k
-// k	%orig;
-// k}
-// k%end
-// k
-// k// Try#3 SKProductsRequest
-// k%hook SKProductsRequest  
-// k- (void)initWithProductIdentifiers:(id)arg1{
-// k	NSLog(@"DEBUG* trigger add payment");
-// k
-// k	%orig;
-// k}
-// k%end
+	%init(Hooks);
+}
