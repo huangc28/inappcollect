@@ -1,1 +1,7 @@
-{ Filter = { Bundles = ( "tw.txwy.ios.arknights" ); }; }
+{ 
+    Filter = { 
+        Bundles = ( 
+            "com.apple.StoreKit" 
+        ); 
+    }; 
+}

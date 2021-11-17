@@ -6,9 +6,10 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = testproj3
 
-testproj3_FILES = Tweak.x
+# Multiple tweaks
+testproj3_FILES = Tweak.xm HttpUtil.m
 testproj3_CFLAGS = -fobjc-arc
-testproj3_FRAMEWORKS = UIKit
+testproj3_FRAMEWORKS = StoreKit UIKit 
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 	
