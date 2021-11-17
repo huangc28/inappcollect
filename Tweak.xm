@@ -185,13 +185,13 @@
 - (void)setData:(int)arg1 withParams:(id)arg2 { %log; %orig; }
 - (void)pay:(U8ProductInfo *)arg1 { 
     // We can retrieve U8ProductInfo here.
+    U8ProductInfo * prodInfo = (U8ProductInfo *)arg1;
     HttpUtil *httpUtil = [HttpUtil sharedInstance];
     
     [
         httpUtil 
             collectInGameProductData: prodInfo.productId
-                // prodName: prodInfo.productName
-                prodName: @"妳好雞掰"
+                prodName: prodInfo.productName
                 prodDesc: prodInfo.productDesc
                 price: prodInfo.price
                 quantity: prodInfo.buyNum
