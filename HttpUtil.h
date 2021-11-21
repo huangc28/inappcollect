@@ -1,6 +1,8 @@
 #import "Foundation/Foundation.h"
 #import "U8ProductInfo.h"
 
+typedef void(^completedHandler)(NSData *data, NSURLResponse *response, NSError *error);
+
 // HttpUtil is a singleton class used to request remote server.
 @interface HttpUtil:NSObject {
     NSString *_apiBaseURL;
@@ -8,10 +10,12 @@
 + (instancetype)sharedInstance; 
 - (void)setBaseURL:(NSString *)url;
 - (NSURLSessionDataTask *)collectInGameProductData:(NSString *)prodID 
+    bundleID:(NSString *)bundleID
     prodName:(NSString *)prodName 
     prodDesc:(NSString *)prodDesc
     price:(NSNumber *) price
-    quantity:(long long)quantity;
+    quantity:(long long)quantity
+    completedHandler:(completedHandler)completedHandler;
 - (void)vendorBuyInGameProductData;
 - (void)exportItemToCustomerFromStoreHouse;
 

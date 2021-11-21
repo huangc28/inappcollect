@@ -33,6 +33,7 @@
     self.apiBaseURL = url;
 } 
 
+
 // @TODO pass block as variable.
 // POST following info to backend:
 //   - productID
@@ -43,11 +44,14 @@
 //   - roleName
 //
 - (NSURLSessionDataTask *)collectInGameProductData:(NSString *)prodID
+bundleID:(NSString *)bundleID
 prodName:(NSString *)prodName  
 prodDesc:(NSString *)prodDesc
 price:(NSNumber *) price
 quantity:(long long)quantity
+completedHandler:(completedHandler)completedHandler
 {
+    NSLog(@"DEBUG* bundleID %@", bundleID);
     NSLog(@"DEBUG* prodID %@", prodID);
     NSLog(@"DEBUG* prodName %@", prodName);
     NSLog(@"DEBUG* prodDesc %@", prodDesc);
@@ -55,13 +59,12 @@ quantity:(long long)quantity
     NSLog(@"DEBUG* quantity %lld", quantity);
 
     NSString *params = [ 
-        NSString stringWithFormat: @"prod_id=%@&prod_name=%@&prod_desc=%@&price=%@&quantity=%lld", prodID, prodName, prodDesc, price, quantity
+        NSString stringWithFormat: @"bundle_id=%@&prod_id=%@&prod_name=%@&prod_desc=%@&price=%@&quantity=%lld", bundleID, prodID, prodName, prodDesc, price, quantity
     ];
     
     // Convert string to data
     NSData *postData = [
         params 
-            // dataUsingEncoding:NSASCIIStringEncoding
             dataUsingEncoding:NSUTF8StringEncoding
             allowLossyConversion:YES
     ]; 
@@ -90,34 +93,10 @@ quantity:(long long)quantity
         session 
             dataTaskWithRequest: request
             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                NSLog(@"DEBUG* completionHandler %@", error);
-                // If there is an error, show alert with error.
-                // If not show alert to notice user that the data has been collected successfully.
+                completedHandler(data, response, error);
 
-                // NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                // if(httpResponse.statusCode == 200)
-                // {
-                //     NSError *parseError = nil;
-                //     NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-                //     NSLog(@"The response is - %@",responseDictionary);
-                //     NSInteger success = [[responseDictionary objectForKey:@"success"] integerValue];
-                //     if(success == 1)
-                //     {
-                //         NSLog(@"Login SUCCESS");
-                //     }
-                //     else
-                //     {
-                //         NSLog(@"Login FAILURE");
-                //     }
-                // }
-                // else
-                // {
-                //     NSLog(@"Error");     
-                // }
             }
     ];
-    
-    NSLog(@"DEBUG* collectInGameProductData %@", self.apiBaseURL);
     
     [dataTask resume];
     
