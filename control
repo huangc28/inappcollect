@@ -1,5 +1,5 @@
-Package: com.huangc28.testproj3
-Name: testproj3
+Package: com.huangc28.inappcollect
+Name: inappcollect
 Version: 0.0.1
 Architecture: iphoneos-arm
 Description: An awesome MobileSubstrate tweak!

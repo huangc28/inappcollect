@@ -246,7 +246,7 @@
 										[
 											Alert
 												show:^(){
-													NSLog(@"DEBUG* hello bryan");
+													NSLog(@"DEBUG* hello bryan!!");
 												}
 												title: @"Success"
 												message: @"collect complete"
