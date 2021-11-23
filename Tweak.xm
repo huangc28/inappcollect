@@ -1,21 +1,96 @@
 #import "SpringBoard/SpringBoard.h"
 #import "StoreKit/StoreKit.h"
 #import "FrontBoard/FBProcess.h"
-#import "StoreKitManager.h"
-#import "U8ProductInfo.h"
+
+#import "Arknights/StoreKitManager.h"
+#import "Arknights/U8SDKAppController.h"
+#import "Arknights/StoreKitReceiptRequest.h"
+#import "Arknights/StoreKitReceiptRefresher.h"
+#import "Arknights/XDGProductQuery.h"
+
+
 #import "HttpUtil.h"
 #import "GameData.h"
+#import "ClassUtil.h"
 #import "Alert.h"
 
 %group Hooks
 
-%hook StoreKitManager
-+ (void)unitySendMessage:(id)arg1 param:(id)arg2 { %log; %orig; }
-+ (id)sharedManager {
-    id r = %orig;
+%hook XDGProductQuery
+- (void)queryTransactionReceipt:(id)arg1 withCompletion:(id)arg2 {
+	NSLog(@"DEBUG* queryTransactionReceipt 1 %@", arg1);
+	NSLog(@"DEBUG* queryTransactionReceipt 2 %@", arg2);
 
-    return r;
- }
+	Method m = class_getClassMethod( [ self class ], @selector(queryTransactionReceipt));
+	char ret[ 256 ];
+	method_getReturnType( m, ret, 256 );
+	// NSLog( @"DEBUG* Return type: %s", ret );
+
+	NSLog(@"DEUBG* Stack = %@", [array objectAtIndex:0]);
+	NSLog(@"DEBUG* Framework = %@", [array objectAtIndex:1]);
+	NSLog(@"DEBUG* Class caller = %@", [array objectAtIndex:3]);
+	NSLog(@"DEBUG* Function caller = %@", [array objectAtIndex:4]);
+
+	// %orig;
+}
+%end
+
+%hook APMInAppPurchaseTransactionReporter
+- (void)reportTransactionsFromArray:(id)arg1 {
+	NSLog(@"DEBUG* reportTransactionsFromArray 1 %@", arg1);
+
+	// %orig;
+}
+%end
+
+%hook NSData
+
++(id)dataWithContentsOfURL:(id)arg1 {
+	NSLog(@"DEBUG* dataWithContentsOfURL %@", arg1);
+
+	NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
+	NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
+	NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
+	[array removeObject:@""];
+
+	//NSLog(@"DEUBG* Stack = %@", [array objectAtIndex:0]);
+	//NSLog(@"DEBUG* Framework = %@", [array objectAtIndex:1]);
+	//NSLog(@"DEBUG* Class caller = %@", [array objectAtIndex:3]);
+	//NSLog(@"DEBUG* Function caller = %@", [array objectAtIndex:4]);
+
+	return %orig;
+}
+
+%end
+
+
+%hook StoreKitReceiptRefresher
+- (void)refreshReceipt {
+	NSLog(@"DEBUG* refreshReceipt");
+}
+
+- (void)requestDidFinish:(id)arg1 {
+	NSLog(@"DEBUG* requestDidFinish %@", arg1);
+}
+%end
+
+%hook StoreKitReceiptRequest
+- (void)validateReceipt:(id)arg1 {
+	NSLog(@"DEBUG* validateReceipt %@", arg1);
+}
+%end
+
+%hook U8SDKAppController
+
+- (void)OnPayPaid:(id)arg1{
+	NSLog(@"DEBUG* OnPayPaid~ %@", arg1);
+
+	%orig;
+}
+%end
+
+
+%hook StoreKitManager
 - (void)setDeferredPayment:(SKPayment *)deferredPayment { %log; %orig; }
 - (SKPayment *)deferredPayment { %log; SKPayment * r = %orig; NSLog(@"DEBUG* = %@", r); return r; }
 - (void)setApplicationUserName:(NSString *)applicationUserName { %log; %orig; }
@@ -36,8 +111,16 @@
 
     %orig;
 }
-- (void)storeKitReceiptRequest:(id)arg1 validatedWithStatusCode:(int)arg2 { %log; %orig; }
-- (void)storeKitReceiptRequest:(id)arg1 validatedWithResponse:(id)arg2 { %log; %orig; }
+- (void)storeKitReceiptRequest:(id)arg1 validatedWithStatusCode:(int)arg2 {
+		NSLog(@"DEBUG* storeKitReceiptRequest 1 %@, %d", arg1, arg2);
+
+		%orig;
+}
+- (void)storeKitReceiptRequest:(id)arg1 validatedWithResponse:(id)arg2 {
+		NSLog(@"DEBUG* storeKitReceiptRequest %@, %@", arg1, arg2);
+
+		%orig;
+}
 - (void)storeKitReceiptRequest:(id)arg1 didFailWithError:(id)arg2 { %log; %orig; }
 - (void)paymentQueue:(id)arg1 updatedDownloads:(id)arg2 {
     NSLog(@"DEBUG* paymentQueue 1");
@@ -55,7 +138,7 @@
     %orig;
 }
 - (void)paymentQueue:(id)arg1 removedTransactions:(id)arg2 {
-    NSLog(@"DEBUG* paymentQueue 3");
+    NSLog(@"DEBUG* paymentQueue 3 %@", arg1);
 
     %orig;
 }
@@ -68,30 +151,45 @@
 // We assume that when user has completed the payment, this method will be called.
 // We will inspect the transaction result here and try to retrieve.
 - (void)paymentQueue:(SKPaymentQueue *)arg1 updatedTransactions:(NSArray *)transactions {
-    // NSLog(@"DEBUG* paymentQueue 5 - 1 %@", arg1);
-    // NSLog(@"DEBUG* paymentQueue 5 - 2 %@", arg2[0]);
-
     for (SKPaymentTransaction *transaction in transactions) {
         switch (transaction.transactionState) {
-            case SKPaymentTransactionStatePurchased:
-                NSLog(@"DEBUG* transaction success %@", transaction);
+            case SKPaymentTransactionStatePurchased: {
+              NSLog(@"DEBUG* transaction success %@", transaction);
 
-                // [[SKPaymentQueue defaultQueue]
-                //      finishTransaction:transaction];
-                break;
+							NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
+							NSData *receipt = [NSData dataWithContentsOfURL:receiptURL];
+							if (!receipt) {
+							    NSLog(@"DEBUG* no receipt");
+							    /* No local receipt -- handle the error. */
+							} else {
+							    /* Get the receipt in encoded format */
+							    NSString *encodedReceipt = [receipt base64EncodedStringWithOptions:0];
 
-            case SKPaymentTransactionStateFailed:
+							    NSLog(@"DEBUG* encodedReceipt %@", encodedReceipt);
+							}
+
+							break;
+						}
+
+            case SKPaymentTransactionStateFailed: {
+
                 NSLog(@"DEBUG* Transaction Failed");
                 // [[SKPaymentQueue defaultQueue]
                 //      finishTransaction:transaction];
                 break;
+						}
 
-            default:
-                break;
-
+            default: {
+							break;
+						}
         }
-
     }
+
+		// import (入庫): we hijack transaction `SKPaymentTransaction` instance data here!
+		// assign custom data to this `SKPaymentTransaction`:
+		//   - payment.productIdentifier
+		//   - payment.quantity
+		//   - transaction.transactionIdentifier
 
     // arg2 is NSArray of type SKPaymentTransaction.
     //   - product token
@@ -121,7 +219,7 @@
 
     // NSLog(@"DEBUG* paymentTrans %@", paymentTrans);
 
-    // %orig;
+    %orig;
 }
 - (void)request:(id)arg1 didFailWithError:(id)arg2 {
     NSLog(@"DEBUG* request");
@@ -143,10 +241,18 @@
 - (void)pauseDownloads { %log; %orig; }
 - (void)updateStorePromotionVisibility:(long long)arg1 forProductId:(id)arg2 { %log; %orig; }
 - (void)fetchStorePromotionVisibilityForProductId:(id)arg1 { %log; %orig; }
-- (id)getAllCurrentTransactions { %log; id r = %orig; NSLog(@"DEBUG* getAllCurrentTransactions %@", r); return r; }
+- (id)getAllCurrentTransactions {
+		id r = %orig;
+		NSLog(@"DEBUG* getAllCurrentTransactions %@", r);
+		return r;
+}
 - (id)getAllSavedTransactions { %log; id r = %orig; NSLog(@"DEBUG* getAllSavedTransactions %@", r); return r; }
 - (void)validateAutoRenewableReceipt:(id)arg1 withSecret:(id)arg2 isTestReceipt:(_Bool)arg3 { %log; %orig; }
-- (void)validateReceipt:(id)arg1 isTestReceipt:(_Bool)arg2 { %log; %orig; }
+- (void)validateReceipt:(id)arg1 isTestReceipt:(_Bool)arg2 {
+	NSLog(@"DEBUG validate validateReceipt %@", arg1);
+
+	%orig;
+}
 - (void)finishPendingTransaction:(id)arg1 { %log; %orig; }
 - (void)finishPendingTransactions { %log; %orig; }
 - (void)purchaseProduct:(id)arg1 quantity:(int)arg2 {
@@ -162,7 +268,11 @@
 }
 - (id)productForIdentifier:(id)arg1 { %log; id r = %orig; NSLog(@"DEBUG* productForIdentifier %@", r); return r; }
 - (void)unitySendErrorMessage:(unsigned int *)arg1 error:(id)arg2 { %log; %orig; }
-- (void)completeAndRecordTransaction:(id)arg1 { %log; %orig; }
+- (void)completeAndRecordTransaction:(id)arg1 {
+	NSLog(@"DEBUG* completeAndRecordTransaction %@", arg1);
+
+	%orig;
+}
 - (id)init { id r = %orig; return r;}
 - (NSString *)debugDescription { %log; NSString * r = %orig; NSLog(@"DEBUG* debugDescription = %@", r); return r; }
 - (NSString *)description { %log; NSString * r = %orig; NSLog(@"DEBUG* description %@", r); return r; }
@@ -173,13 +283,32 @@
 %hook UnityView
 
 - (void)touchesEnded:(id)arg1 withEvent:(id)arg2{
-    %orig;
+
+	//[
+	//	[ClassUtil sharedInstance]
+	//		dumpClassInfo:[XDGProductQuery class]
+	//];
+
+	// [
+	// 	[ClassUtil sharedInstance]
+	// 		dumpClassInfo:FBSDKPaymentProductRequester
+	// ];
+
+	// [
+	// 	[ClassUtil sharedInstance]
+	// 		dumpClassInfo:APMInAppPurchaseTransactionReporter
+	// ];
+
+	%orig;
 }
 
 - (void)touchesBegan:(id)arg1 withEvent:(id)arg2{
+		// Code to invoke payment.
     // SKMutablePayment *payment = [[SKMutablePayment alloc] init] ;
     // payment.productIdentifier = @"arktw_diamond_1";
     // [[SKPaymentQueue defaultQueue] addPayment:payment];
+
+		// ClassUtil
 
     %orig;
 }
@@ -211,7 +340,9 @@
     NSLog(@" = 0x%s", r);
     return r;
 }
-- (void)setData:(int)arg1 withParams:(id)arg2 { %log; %orig; }
+- (void)setData:(int)arg1 withParams:(id)arg2 {
+	%orig;
+}
 - (void)pay:(U8ProductInfo *)arg1 {
     // We can retrieve U8ProductInfo here.
     U8ProductInfo * prodInfo = (U8ProductInfo *)arg1;
@@ -280,12 +411,19 @@
     %orig;
 }
 - (_Bool)isNativePlugin { %log; _Bool r = %orig; NSLog(@" = %d", r); return r; }
-- (void)submitGameData:(id)arg1 { %log; %orig; }
+- (void)submitGameData:(id)arg1 {
+		NSLog(@"DEBUG submitGameData ");
+		%orig;
+}
 - (void)showAccountCenter { %log; %orig; }
 - (_Bool)hasAccountCenter { %log; _Bool r = %orig; NSLog(@" = %d", r); return r; }
 - (void)switchAccount { %log; %orig; }
 - (void)logout { %log; %orig; }
-- (void)login { %log; %orig; }
+- (void)login {
+		NSLog(@"DEBUG* login~");
+
+		%orig;
+}
 - (void)didReceiveRemoteNotification:(id)arg1 { %log; %orig; }
 - (void)didReceiveLocalNotification:(id)arg1 { %log; %orig; }
 - (void)didFailToRegisterForRemoteNotificationsWithError:(id)arg1 { %log; %orig; }
