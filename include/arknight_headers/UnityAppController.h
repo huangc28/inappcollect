@@ -6,9 +6,10 @@
 
 #import "NSObject.h"
 
-#import "UIApplicationDelegate.h"
+// #import "UIApplicationDelegate.h"
 
 @class CADisplayLink, DisplayConnection, NSString, UIView, UIViewController, UIWindow, UnityView;
+@protocol UIApplicationDelegate;
 
 @interface UnityAppController : NSObject <UIApplicationDelegate>
 {
