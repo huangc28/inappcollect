@@ -7,7 +7,11 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = inappcollect
 
 # Multiple tweaks
-inappcollect_FILES = Tweak.xm HttpUtil.m GameData.m Alert.m ClassUtil.m
+inappcollect_FILES = Tweak.xm $\
+	GameData.m $\
+		Alert.m  $\
+		ClassUtil.m $\
+	../SharedLibraries/HttpUtil.m
 inappcollect_CFLAGS = -fobjc-arc
 inappcollect_FRAMEWORKS = StoreKit UIKit
 

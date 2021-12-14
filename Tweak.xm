@@ -7,42 +7,15 @@
 #import "Arknights/StoreKitReceiptRequest.h"
 #import "Arknights/StoreKitReceiptRefresher.h"
 #import "Arknights/XDGProductQuery.h"
+#import "Arknights/U8ProductInfo.h"
 
+#import "SharedLibraries/HttpUtil.h"
 
-#import "HttpUtil.h"
 #import "GameData.h"
 #import "ClassUtil.h"
 #import "Alert.h"
 
 %group Hooks
-
-%hook XDGProductQuery
-- (void)queryTransactionReceipt:(id)arg1 withCompletion:(id)arg2 {
-	NSLog(@"DEBUG* queryTransactionReceipt 1 %@", arg1);
-	NSLog(@"DEBUG* queryTransactionReceipt 2 %@", arg2);
-
-	Method m = class_getClassMethod( [ self class ], @selector(queryTransactionReceipt));
-	char ret[ 256 ];
-	method_getReturnType( m, ret, 256 );
-	// NSLog( @"DEBUG* Return type: %s", ret );
-
-	NSLog(@"DEUBG* Stack = %@", [array objectAtIndex:0]);
-	NSLog(@"DEBUG* Framework = %@", [array objectAtIndex:1]);
-	NSLog(@"DEBUG* Class caller = %@", [array objectAtIndex:3]);
-	NSLog(@"DEBUG* Function caller = %@", [array objectAtIndex:4]);
-
-	// %orig;
-}
-%end
-
-%hook APMInAppPurchaseTransactionReporter
-- (void)reportTransactionsFromArray:(id)arg1 {
-	NSLog(@"DEBUG* reportTransactionsFromArray 1 %@", arg1);
-
-	// %orig;
-}
-%end
-
 %hook NSData
 
 +(id)dataWithContentsOfURL:(id)arg1 {
@@ -62,7 +35,6 @@
 }
 
 %end
-
 
 %hook StoreKitReceiptRefresher
 - (void)refreshReceipt {
@@ -151,39 +123,46 @@
 // We assume that when user has completed the payment, this method will be called.
 // We will inspect the transaction result here and try to retrieve.
 - (void)paymentQueue:(SKPaymentQueue *)arg1 updatedTransactions:(NSArray *)transactions {
-    for (SKPaymentTransaction *transaction in transactions) {
-        switch (transaction.transactionState) {
-            case SKPaymentTransactionStatePurchased: {
-              NSLog(@"DEBUG* transaction success %@", transaction);
+    //for (SKPaymentTransaction *transaction in transactions) {
+    //  switch (transaction.transactionState) {
+		//		case SKPaymentTransactionStatePurchasing: {
+		//			NSLog(@"DEBUG* SKPaymentTransactionStatePurchasing triggered");
+		//		}
 
-							NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
-							NSData *receipt = [NSData dataWithContentsOfURL:receiptURL];
-							if (!receipt) {
-							    NSLog(@"DEBUG* no receipt");
-							    /* No local receipt -- handle the error. */
-							} else {
-							    /* Get the receipt in encoded format */
-							    NSString *encodedReceipt = [receipt base64EncodedStringWithOptions:0];
+    //    case SKPaymentTransactionStatePurchased: {
+    //      NSLog(@"DEBUG* transaction success %@", transaction);
 
-							    NSLog(@"DEBUG* encodedReceipt %@", encodedReceipt);
-							}
+		//			NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
+		//			NSData *receipt = [NSData dataWithContentsOfURL:receiptURL];
+		//			if (!receipt) {
+		//			    NSLog(@"DEBUG* no receipt");
+		//			    /* No local receipt -- handle the error. */
+		//			} else {
+		//			    /* Get the receipt in encoded format */
+		//			    NSString *encodedReceipt = [receipt base64EncodedStringWithOptions:0];
 
-							break;
-						}
+		//			    NSLog(@"DEBUG* encodedReceipt %@", encodedReceipt);
+		//			}
 
-            case SKPaymentTransactionStateFailed: {
 
-                NSLog(@"DEBUG* Transaction Failed");
-                // [[SKPaymentQueue defaultQueue]
-                //      finishTransaction:transaction];
-                break;
-						}
+		//			[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+		//			NSLog(@"DEBUG* finishTransaction");
 
-            default: {
-							break;
-						}
-        }
-    }
+		//			break;
+		//		}
+
+    //    case SKPaymentTransactionStateFailed: {
+		//			NSLog(@"DEBUG* Transaction Failed");
+    //    	// [[SKPaymentQueue defaultQueue]
+    //    	//      finishTransaction:transaction];
+    //    	break;
+		//		}
+
+    //    default: {
+		//			break;
+		//		}
+    //  }
+    //}
 
 		// import (入庫): we hijack transaction `SKPaymentTransaction` instance data here!
 		// assign custom data to this `SKPaymentTransaction`:
@@ -205,21 +184,22 @@
     //NSString *reqDataStr = [[NSString alloc] initWithData:reqData encoding:NSUTF8StringEncoding];
 
     // NSLog(@"DEBUG* arg2 size %lu %lu", sizeof(arg2), (unsigned long)[arg2 count]);
-    for (SKPaymentTransaction *transaction in transactions) {
-        NSLog(@"DEBUG* iter");
-        SKPayment *payment = transaction.payment;
+    /*for (SKPaymentTransaction *transaction in transactions) {*/
+        /*NSLog(@"DEBUG* iter");*/
+        /*SKPayment *payment = transaction.payment;*/
 
-        NSString *productIdentifier = payment.productIdentifier;
-        NSInteger quantity = payment.quantity;
+        /*NSString *productIdentifier = payment.productIdentifier;*/
+        /*NSInteger quantity = payment.quantity;*/
 
-        NSLog(@"DEBUG* paymentQueue transaction transactionIdentifier %@", transaction.transactionIdentifier);
-        NSLog(@"DEBUG* paymentQueue productIdentifier %@", productIdentifier);
-        NSLog(@"DEBUG* paymentQueue quantity %ld", (long)quantity);
-    }
+        /*NSLog(@"DEBUG* paymentQueue transaction transactionIdentifier %@", transaction.transactionIdentifier);*/
+        /*NSLog(@"DEBUG* paymentQueue productIdentifier %@", productIdentifier);*/
+        /*NSLog(@"DEBUG* paymentQueue quantity %ld", (long)quantity);*/
+    /*}*/
+
 
     // NSLog(@"DEBUG* paymentTrans %@", paymentTrans);
 
-    %orig;
+	%orig;
 }
 - (void)request:(id)arg1 didFailWithError:(id)arg2 {
     NSLog(@"DEBUG* request");
@@ -344,12 +324,12 @@
 	%orig;
 }
 - (void)pay:(U8ProductInfo *)arg1 {
+	@try {
     // We can retrieve U8ProductInfo here.
     U8ProductInfo * prodInfo = (U8ProductInfo *)arg1;
     HttpUtil *httpUtil = [HttpUtil sharedInstance];
 
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-
 
     [
         httpUtil
@@ -377,7 +357,7 @@
 										[
 											Alert
 												show:^(){
-													NSLog(@"DEBUG* hello bryan!!");
+													NSLog(@"DEBUG* item data collected!");
 												}
 												title: @"Success"
 												message: @"collect complete"
@@ -406,9 +386,11 @@
 									}
 								}
     ];
+	} @catch (NSException *exception) {
+		NSLog(@"DEBUG* exception %@", exception.reason);
+	}
 
-
-    %orig;
+  %orig;
 }
 - (_Bool)isNativePlugin { %log; _Bool r = %orig; NSLog(@" = %d", r); return r; }
 - (void)submitGameData:(id)arg1 {
@@ -445,8 +427,8 @@
 // Detect application launch.
 // Reference github: https://github.com/Razzile/RippleBoard/blob/master/Tweak.xm
 // bundleIdentifier:
-//   StoreKit:
 //   明日方舟: tw.txwy.ios.arknights
+//   天堂2m :
 %hook SBMainWorkspace
 
 -(void)applicationProcessDidLaunch:(FBProcess *)applicationProcess {
