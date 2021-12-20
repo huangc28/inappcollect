@@ -8,10 +8,13 @@ TWEAK_NAME = inappcollect
 
 # Multiple tweaks
 inappcollect_FILES = Tweak.xm $\
-	GameData.m $\
-		Alert.m  $\
-		ClassUtil.m $\
-	../SharedLibraries/HttpUtil.m
+	ArknightsCollect.xm $\
+	Lineage2Collect.xm $\
+	LineageRCollect.xm $\
+	ClassUtil.m $\
+	RequestCompletedHandler.m $\
+	../SharedLibraries/HttpUtil.m $\
+	../SharedLibraries/Alert.m
 inappcollect_CFLAGS = -fobjc-arc
 inappcollect_FRAMEWORKS = StoreKit UIKit
 
