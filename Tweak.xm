@@ -7,6 +7,8 @@
 #import "ArknightsCollect.h"
 #import "Lineage2Collect.h"
 #import "LineageRCollect.h"
+#import "LineageMLive.h"
+#import "KgtwCollect.h"
 
 %group Hooks
 
@@ -19,16 +21,14 @@
 %hook SBMainWorkspace
 
 -(void)applicationProcessDidLaunch:(FBProcess *)applicationProcess {
-    //GameData *gameData = [GameData sharedInstance];
-    //gameData.bundleID = applicationProcess.bundleIdentifier;
     NSLog(@"DEBUG* applicationProcessDidLaunch %@", applicationProcess.bundleIdentifier);
 
-		// NSLog(@"DEBUG* applicationProcessDidLaunch 2 %@", [gameData bundleID]);
     %orig;
 }
 
 %end // SBMainWorkspace
 %end // Hooks
+
 
 // %ctor gets called when executable is loaded into the memory
 %ctor {
@@ -39,9 +39,15 @@
 	// 明日方舟
 	InitArknightsGroup();
 
-	// 天堂2 M
+	// 天堂 2 M
 	InitLineage2Group();
 
 	// 天堂 W
 	InitLineageRCollect();
+
+	// 天堂 M
+	InitLineageMLiveCollect();
+
+	// 傳說對決
+	InitKgtwCollect();
 }
