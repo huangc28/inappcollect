@@ -19,6 +19,7 @@ inappcollect_FILES = Tweak.xm $\
 	Lineage2Collect.xm $\
 	LineageRCollect.xm $\
 	LineageMLive.xm $\
+	Snail.xm $\
 	ProductInfoDelegate.m $\
 	ClassUtil.m $\
 	RequestCompletedHandler.m $\

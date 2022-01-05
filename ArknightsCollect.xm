@@ -34,17 +34,6 @@
 											error:&parseError
 									];
 
-									if (error) {
-										[
-											Alert
-												show:^(){
-													NSLog(@"DEBUG* item data collected!");
-												}
-												title: @"Error"
-												message: [error localizedDescription]
-										];
-									}
-
 									NSLog(@"DEBUG* The response is - %@", responseDictionary);
 									NSString *errCode = (NSString *)responseDictionary[@"err_code"];
 

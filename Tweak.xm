@@ -2,8 +2,8 @@
 #import "Lineage2Collect.h"
 #import "LineageRCollect.h"
 #import "LineageMLive.h"
+#import "Snail.h"
 
-// %ctor gets called when executable is loaded into the memory
 %ctor {
 	NSLog(@"DEBUG* inapp collect started!");
 
@@ -18,4 +18,7 @@
 
 	// 天堂 M
 	InitLineageMLiveCollect();
+
+	// 最強蝸牛
+	InitSnail();
 }
