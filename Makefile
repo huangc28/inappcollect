@@ -1,12 +1,15 @@
 TARGET := iphone:clang:latest:14.0
 INSTALL_TARGET_PROCESSES = SpringBoard
 
-# Default to be home IP.
-API_HOST:=http://192.168.50.94
+# TODO API_HOST value should be feeded from external env file.
+
+# Local machine inet IP
+#API_HOST:=http://192.168.50.94
+
+# Production IP
+#API_HOST:=http://atuuapi.darkpanda.love
 
 include $(THEOS)/makefiles/common.mk
-
-include $(shell pwd)/.env
 
 TWEAK_NAME = inappcollect
 
@@ -15,7 +18,6 @@ inappcollect_FILES = Tweak.xm $\
 	ArknightsCollect.xm $\
 	Lineage2Collect.xm $\
 	LineageRCollect.xm $\
-	KgtwCollect.xm $\
 	LineageMLive.xm $\
 	ProductInfoDelegate.m $\
 	ClassUtil.m $\
@@ -23,9 +25,9 @@ inappcollect_FILES = Tweak.xm $\
 	../SharedLibraries/HttpUtil.m $\
 	../SharedLibraries/Alert.m
 inappcollect_CFLAGS = -fobjc-arc
-inappcollect_EXTRA_FRAMEWORKS = UnityFramework
-inappcollect_FRAMEWORKS = StoreKit UIKit
+inappcollect_CFLAGS += -DAPI_HOST=@\"$(API_HOST)\"
 
+inappcollect_FRAMEWORKS = StoreKit UIKit
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

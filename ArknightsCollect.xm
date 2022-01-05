@@ -1,5 +1,4 @@
 #import "Arknights/U8ProductInfo.h"
-#import "ArknightsCollect.h"
 
 #import "SharedLibraries/Alert.h"
 #import "SharedLibraries/HttpUtil.h"
@@ -56,7 +55,7 @@
 													NSLog(@"DEBUG* item data collected!");
 												}
 												title: @"Success"
-												message: @"collect complete"
+												message: @"採集成功"
 										];
 									} else {
 										if ([errCode isEqualToString:@"1000001"]) {
