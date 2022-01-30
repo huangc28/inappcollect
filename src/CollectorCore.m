@@ -23,77 +23,81 @@
 	prodDesc:(NSString *)prodDesc
 	price   :(NSNumber *)price
 	quantity:(long long)quantity {
-		CollectorCore * __weak weakSelf = self;
+		@try {
+			CollectorCore * __weak weakSelf = self;
 
-		HttpUtil *httpUtil = [HttpUtil sharedInstance];
-		[
-			httpUtil
-				collectInGameProductData:prodID
-					bundleID        :bundleID
-					prodName        :prodName
-					prodDesc        :prodDesc
-					price           :price
-					quantity        :quantity
-					completedHandler:^(NSData *data, NSURLResponse *response, NSError *error){
-						NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+			HttpUtil *httpUtil = [HttpUtil sharedInstance];
+			[
+				httpUtil
+					collectInGameProductData:prodID
+						bundleID        :bundleID
+						prodName        :prodName
+						prodDesc        :prodDesc
+						price           :price
+						quantity        :quantity
+						completedHandler:^(NSData *data, NSURLResponse *response, NSError *error){
+							NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
 
-						NSError *parseError = nil;
-						NSDictionary *responseDictionary = [
-							NSJSONSerialization
-								JSONObjectWithData:data
-								options:0
-								error:&parseError
-						];
-
-						NSLog(@"DEBUG* responseDictionary %@", responseDictionary);
-
-						if (error) {
-							[
-								Alert
-									show:^(){
-										NSLog(@"DEBUG* api request error");
-									}
-									title: @"Request error"
-									message: [error localizedDescription]
+							NSError *parseError = nil;
+							NSDictionary *responseDictionary = [
+								NSJSONSerialization
+									JSONObjectWithData:data
+									options:0
+									error:&parseError
 							];
-						}
 
-						if (parseError) {
-							[
-								Alert
-									show:^(){
-										NSLog(@"DEBUG* failed to parsed request");
-									}
-									title: @"Response parse error"
-									message: [parseError localizedDescription]
-							];
-						}
+							NSLog(@"DEBUG* responseDictionary %@", responseDictionary);
 
-						NSLog(@"DEBUG* The response is - %@", responseDictionary);
-
-						if (httpResponse.statusCode == 200) {
-							[
-								Alert
-									show:^(){
-										NSLog(@"DEBUG* item data collected!");
-									}
-									title: @"Success"
-									message: @"collect complete"
-							];
-						} else {
-							if (![responseDictionary[@"err_code"] isEqual:@"1000001"]) {
-								[weakSelf unmarkCollectedProdToDictionary:prodID];
+							if (error) {
+								[
+									Alert
+										show:^(){
+											NSLog(@"DEBUG* api request error");
+										}
+										title: @"Request error"
+										message: [error localizedDescription]
+								];
 							}
 
-							[
-								Alert
-									show:^(){}
-									title: @"Error"
-									message: responseDictionary[@"err"]
-							];
+							if (parseError) {
+								[
+									Alert
+										show:^(){
+											NSLog(@"DEBUG* failed to parsed request");
+										}
+										title: @"Response parse error"
+										message: [parseError localizedDescription]
+								];
+							}
+
+							NSLog(@"DEBUG* The response is - %@", responseDictionary);
+
+							if (httpResponse.statusCode == 200) {
+								[
+									Alert
+										show:^(){
+											NSLog(@"DEBUG* item data collected!");
+										}
+										title: @"Success"
+										message: @"collect complete"
+								];
+							} else {
+								if (![responseDictionary[@"err_code"] isEqual:@"1000001"]) {
+									[weakSelf unmarkCollectedProdToDictionary:prodID];
+								}
+
+								[
+									Alert
+										show:^(){}
+										title: @"Error"
+										message: responseDictionary[@"err"]
+								];
+							}
 						}
-					}
-		];
+			];
+		} @catch (NSException *exception) {
+			NSLog(@"DEBUG* failed to collect");
+		}
 }
 
 - (void)markCollectedProdToDictionary:(NSString *)prodID {

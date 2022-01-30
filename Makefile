@@ -18,7 +18,6 @@ inappcollect_FILES = Tweak.xm $\
 	$(wildcard  ./src/*.m) $\
 	$(wildcard ./src/*.xm) $\
 	$(wildcard ../SharedLibraries/*.m) $\
-	ArknightsCollect.xm $\
 	LineageRCollect.xm $\
 	LineageMLive.xm $\
 	Snail.xm $\
