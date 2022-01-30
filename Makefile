@@ -15,16 +15,16 @@ TWEAK_NAME = inappcollect
 
 # Multiple tweaks
 inappcollect_FILES = Tweak.xm $\
+	$(wildcard  ./src/*.m) $\
+	$(wildcard ./src/*.xm) $\
+	$(wildcard ../SharedLibraries/*.m) $\
 	ArknightsCollect.xm $\
-	Lineage2Collect.xm $\
 	LineageRCollect.xm $\
 	LineageMLive.xm $\
 	Snail.xm $\
 	ProductInfoDelegate.m $\
 	ClassUtil.m $\
-	RequestCompletedHandler.m $\
-	../SharedLibraries/HttpUtil.m $\
-	../SharedLibraries/Alert.m
+	RequestCompletedHandler.m
 inappcollect_CFLAGS = -fobjc-arc
 inappcollect_CFLAGS += -DAPI_HOST=@\"$(API_HOST)\"
 

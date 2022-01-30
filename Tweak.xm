@@ -1,5 +1,5 @@
+#import "src/Lineage2MCollect.h"
 #import "ArknightsCollect.h"
-#import "Lineage2Collect.h"
 #import "LineageRCollect.h"
 #import "LineageMLive.h"
 #import "Snail.h"
@@ -11,7 +11,7 @@
 	InitArknightsGroup();
 
 	// 天堂 2 M
-	InitLineage2Group();
+	InitLineage2MGroup();
 
 	// 天堂 W
 	InitLineageRCollect();

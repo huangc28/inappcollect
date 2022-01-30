@@ -14,6 +14,7 @@
 
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
+		// Store product info in a dictionary
 		// TODO this method should be extracted to an independent class
     [
         httpUtil
