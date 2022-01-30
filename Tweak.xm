@@ -1,5 +1,5 @@
 #import "src/Lineage2MCollect.h"
-#import "ArknightsCollect.h"
+#import "src/ArknightsCollect.h"
 #import "LineageRCollect.h"
 #import "LineageMLive.h"
 #import "Snail.h"

@@ -10,8 +10,8 @@
 - (void)pay:(U8ProductInfo *)arg1 {
 	// We can retrieve U8ProductInfo here.
 	U8ProductInfo * prodInfo = (U8ProductInfo *)arg1;
-	HttpUtil *httpUtil = [HttpUtil sharedInstance];
 	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+	CollectorCore *collector = [CollectorCore sharedInstance];
 
 	[
 		collector
