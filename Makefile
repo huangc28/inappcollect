@@ -18,10 +18,6 @@ inappcollect_FILES = Tweak.xm $\
 	$(wildcard  ./src/*.m) $\
 	$(wildcard ./src/*.xm) $\
 	$(wildcard ../SharedLibraries/*.m) $\
-	LineageRCollect.xm $\
-	LineageMLive.xm $\
-	Snail.xm $\
-	ProductInfoDelegate.m $\
 	ClassUtil.m $\
 	RequestCompletedHandler.m
 inappcollect_CFLAGS = -fobjc-arc

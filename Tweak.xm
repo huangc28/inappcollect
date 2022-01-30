@@ -1,8 +1,8 @@
 #import "src/Lineage2MCollect.h"
 #import "src/ArknightsCollect.h"
-#import "LineageRCollect.h"
-#import "LineageMLive.h"
-#import "Snail.h"
+#import "src/LineageMLive.h"
+#import "src/LineageRCollect.h"
+#import "src/Snail.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started!");

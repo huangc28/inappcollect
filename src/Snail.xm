@@ -1,19 +1,11 @@
 #import "StoreKit/StoreKit.h"
 
-#import "SharedLibraries/HttpUtil.h"
 #import "SharedLibraries/Alert.h"
-#import "CollectorCore.h"
+#import "SharedLibraries/HttpUtil.h"
 
-// #import "RequestCompletedHandler.h"
-
-%group Lineage2MGroup
-
-%hook AppleInAppPurchaseManager
-// TODO Find a way to filter those products that has already been collected to prevent redundant request
-// TODO check the payment status before collecting product info.
-// fired to the backend.
+%group Snail
+%hook PayModule
 - (void)productsRequest:(SKProductsRequest *)arg1 didReceiveResponse:(SKProductsResponse *)response {
-
 	if ([response.products count] <= 0) {
 		%orig;
 
@@ -40,13 +32,11 @@
 		];
 	}
 
-
 	%orig;
 }
 %end
-
 %end
 
-extern "C" void InitLineage2MGroup() {
-	%init(Lineage2MGroup);
+extern "C" void InitSnail() {
+	%init(Snail);
 }
