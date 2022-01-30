@@ -18,8 +18,7 @@ inappcollect_FILES = Tweak.xm $\
 	$(wildcard  ./src/*.m) $\
 	$(wildcard ./src/*.xm) $\
 	$(wildcard ../SharedLibraries/*.m) $\
-	ClassUtil.m $\
-	RequestCompletedHandler.m
+	ClassUtil.m
 inappcollect_CFLAGS = -fobjc-arc
 inappcollect_CFLAGS += -DAPI_HOST=@\"$(API_HOST)\"
 
