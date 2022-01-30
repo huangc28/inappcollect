@@ -2,9 +2,7 @@
 
 #import "SharedLibraries/HttpUtil.h"
 #import "SharedLibraries/Alert.h"
-#import "CollectorCore.h"
-
-// #import "RequestCompletedHandler.h"
+#import "../UncleTuuCollectorCore/CollectorCore.h"
 
 %group Lineage2MGroup
 

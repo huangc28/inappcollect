@@ -1,0 +1,3 @@
+[submodule "UncleTuuCollectorCore"]
+	path = UncleTuuCollectorCore
+	url = git@github.com:huangc28/UncleTuuCollectorCore.git

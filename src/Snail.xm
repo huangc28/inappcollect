@@ -2,7 +2,7 @@
 
 #import "SharedLibraries/Alert.h"
 #import "SharedLibraries/HttpUtil.h"
-#import "CollectorCore.h"
+#import "../UncleTuuCollectorCore/CollectorCore.h"
 
 %group Snail
 %hook PayModule

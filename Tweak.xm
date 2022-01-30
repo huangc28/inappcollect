@@ -5,7 +5,7 @@
 #import "src/Snail.h"
 
 %ctor {
-	NSLog(@"DEBUG* inapp collect started!");
+	NSLog(@"DEBUG* inapp collect started");
 
 	// 明日方舟
 	InitArknightsGroup();
