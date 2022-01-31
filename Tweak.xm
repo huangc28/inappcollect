@@ -3,6 +3,7 @@
 #import "src/LineageMLive.h"
 #import "src/LineageRCollect.h"
 #import "src/Snail.h"
+#import "src/Mbmtw.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started");
@@ -21,4 +22,7 @@
 
 	// 最強蝸牛
 	InitSnail();
+
+	// 天涯明月刀
+	InitMbmtwGroup();
 }
