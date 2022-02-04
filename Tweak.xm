@@ -4,6 +4,7 @@
 #import "src/LineageRCollect.h"
 #import "src/Snail.h"
 #import "src/Mbmtw.h"
+#import "src/HarryPotterCollect.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started");
@@ -25,4 +26,7 @@
 
 	// 天涯明月刀
 	InitMbmtwGroup();
+
+	// 哈利波特
+	InitHarryPotterGroup();
 }
