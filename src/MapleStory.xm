@@ -1,5 +1,8 @@
+#import "StoreKit/StoreKit.h"
+
 #import "../../SharedLibraries/Alert.h"
-#import "AlertViewController.h"
+#import "../../SharedLibraries/AlertViewController.h"
+#import "../UncleTuuCollectorCore/CollectorCore.h"
 
 %group MaplestoryGroup
 
@@ -20,12 +23,34 @@
 %end
 
 %hook FBSDKPaymentProductRequestor
-- (void)productsRequest:(id)arg1 didReceiveResponse:(id)arg2{
+- (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response{
 	@try {
-		dispatch_async(dispatch_get_main_queue(), ^{
-				AlertViewController *avc = [[AlertViewController alloc] init];
-				[avc render];
-		});
+		if ([response.products count] <= 0) {
+			%orig;
+
+			return;
+		}
+
+		SKProduct *prod = response.products[0];
+		NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+
+		CollectorCore *collector = [CollectorCore sharedInstance];
+
+		// if product info has been collected, skip API request.
+		if ([collector hasProdCollected:prod.productIdentifier] == NO) {
+			[collector markCollectedProdToDictionary:prod.productIdentifier];
+
+			[
+				collector
+					collectWithCustomedAlert :prod.productIdentifier
+					bundleID                 :bundleIdentifier
+					prodName                 :prod.localizedTitle
+					prodDesc                 :prod.localizedDescription
+					price										 :prod.price
+					quantity								 :1
+			];
+		}
+
 	} @catch (NSException *exception) {
 		NSLog(@"DEBUG* alert exception %@", exception);
 	}
