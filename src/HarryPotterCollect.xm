@@ -13,22 +13,29 @@
 
 	SKProduct *prod = response.products[0];
 	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-	CollectorCore *collector = [CollectorCore sharedInstance];
 
-	// if product info has been collected, skip API request.
-	if ([collector hasProdCollected:prod.productIdentifier] == NO) {
-		[collector markCollectedProdToDictionary:prod.productIdentifier];
+	NSLog(@"DEBUG* HarryPotterGroup FBSDKPaymentProductRequestor bundleIdentifier 1 %@", bundleIdentifier);
+	// Perform operation only if bundleIdentifier equals
+	if ([bundleIdentifier isEqual:@"com.netease.harrypotter.tw"]) {
+		NSLog(@"DEBUG* HarryPotterGroup FBSDKPaymentProductRequestor productsRequest 2 ~");
+		CollectorCore *collector = [CollectorCore sharedInstance];
 
-		[
-			collector
-				collect :prod.productIdentifier
-				bundleID:bundleIdentifier
-				prodName:prod.localizedTitle
-				prodDesc:prod.localizedDescription
-				price   :prod.price
-				quantity:1
-		];
+		// if product info has been collected, skip API request.
+		if ([collector hasProdCollected:prod.productIdentifier] == NO) {
+			[collector markCollectedProdToDictionary:prod.productIdentifier];
+
+			[
+				collector
+					collect :prod.productIdentifier
+					bundleID:bundleIdentifier
+					prodName:prod.localizedTitle
+					prodDesc:prod.localizedDescription
+					price   :prod.price
+					quantity:1
+			];
+		}
 	}
+
 
 	%orig;
 }

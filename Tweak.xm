@@ -5,6 +5,8 @@
 #import "src/Snail.h"
 #import "src/Mbmtw.h"
 #import "src/HarryPotterCollect.h"
+#import "src/CallmeBigBossCollect.h"
+#import "src/MapleStory.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started");
@@ -29,4 +31,10 @@
 
 	// 哈利波特
 	InitHarryPotterGroup();
+
+	// 叫我大掌櫃
+	InitCallmeBigBossCollect();
+
+	// 楓之谷 R
+	InitMaplestoryGroup();
 }
