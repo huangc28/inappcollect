@@ -1,9 +1,12 @@
 #import "StoreKit/StoreKit.h"
 
 #import "../UncleTuuCollectorCore/CollectorCore.h"
+#import "CrownCollect.h"
+#import "GameBundleIDs.h"
 
-%group HarryPotterGroup
-%hook FBSDKPaymentProductRequestor
+%group CrownCollect
+
+%hook JZNgTool
 - (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response {
 	if ([response.products count] <= 0) {
 		%orig;
@@ -14,9 +17,7 @@
 	SKProduct *prod = response.products[0];
 	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
-	// Perform operation only if bundleIdentifier equals
-	if ([bundleIdentifier isEqual:@"com.netease.harrypotter.tw"]) {
-		NSLog(@"DEBUG* HarryPotterGroup FBSDKPaymentProductRequestor productsRequest 2 ~");
+	if ([bundleIdentifier isEqualToString:Crown]) {
 		CollectorCore *collector = [CollectorCore sharedInstance];
 
 		// if product info has been collected, skip API request.
@@ -35,12 +36,12 @@
 		}
 	}
 
-
 	%orig;
 }
 %end
+
 %end
 
-extern "C" void InitHarryPotterGroup() {
-	%init(HarryPotterGroup);
+extern "C" void InitCrownCollect() {
+	%init(CrownCollect);
 }

@@ -7,6 +7,7 @@
 #import "src/HarryPotterCollect.h"
 #import "src/CallmeBigBossCollect.h"
 #import "src/MapleStory.h"
+#import "src/CrownCollect.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started");
@@ -37,4 +38,7 @@
 
 	// 楓之谷 R
 	InitMaplestoryGroup();
+
+	// 放置英雄
+	InitCrownCollect();
 }
