@@ -46,8 +46,8 @@
 					bundleID                 :bundleIdentifier
 					prodName                 :prod.localizedTitle
 					prodDesc                 :prod.localizedDescription
-					price										 :prod.price
-					quantity								 :1
+					price					 :prod.price
+					quantity				 :1
 			];
 		}
 
