@@ -27,12 +27,12 @@
 
 			[
 				collector
-					collect :prod.productIdentifier
-					bundleID:bundleIdentifier
-					prodName:prod.localizedTitle
-					prodDesc:prod.localizedDescription
-					price   :prod.price
-					quantity:1
+					collectWithCustomedAlert :prod.productIdentifier
+					bundleID								 :bundleIdentifier
+					prodName								 :prod.localizedTitle
+					prodDesc								 :prod.localizedDescription
+					price   								 :prod.price
+					quantity								 :1
 			];
 		}
 	}
