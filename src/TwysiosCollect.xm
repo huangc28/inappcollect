@@ -2,12 +2,14 @@
 
 #import "../UncleTuuCollectorCore/CollectorCore.h"
 
-%group HarryPotterGroup
+%group TwysiosCollect
+
 %hook FBSDKPaymentProductRequestor
-- (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response {
+- (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response{
+
 	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
-	if ([bundleIdentifier isEqual:@"com.netease.harrypotter.tw"]) {
+	if ([bundleIdentifier isEqualToString:@"com.mover.twysios"]) {
 		if ([response.products count] <= 0) {
 			%orig;
 
@@ -15,8 +17,8 @@
 		}
 
 		SKProduct *prod = response.products[0];
+		NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
-		// Perform operation only if bundleIdentifier equals
 		CollectorCore *collector = [CollectorCore sharedInstance];
 
 		// if product info has been collected, skip API request.
@@ -35,12 +37,12 @@
 		}
 	}
 
-
 	%orig;
 }
 %end
+
 %end
 
-extern "C" void InitHarryPotterGroup() {
-	%init(HarryPotterGroup);
+extern "C" void InitTwysiosCollect() {
+	%init(TwysiosCollect);
 }

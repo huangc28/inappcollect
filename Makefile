@@ -5,7 +5,9 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = inappcollect
 
-# Multiple tweaks
+inappcollect_FRAMEWORKS = StoreKit UIKit
+
+inappcollect_EXTRA_FRAMEWORKS = UnityFramework_twysios
 inappcollect_FILES = Tweak.xm $\
 	$(wildcard ./UncleTuuCollectorCore/*.m) $\
 	$(wildcard ../SharedLibraries/*.m) $\
@@ -14,7 +16,6 @@ inappcollect_FILES = Tweak.xm $\
 inappcollect_CFLAGS = -fobjc-arc
 inappcollect_CFLAGS += -DAPI_HOST=@\"$(API_HOST)\"
 
-inappcollect_FRAMEWORKS = StoreKit UIKit
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

@@ -8,6 +8,7 @@
 #import "src/CallmeBigBossCollect.h"
 #import "src/MapleStory.h"
 #import "src/CrownCollect.h"
+#import "src/TwysiosCollect.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started");
@@ -41,4 +42,7 @@
 
 	// 放置英雄
 	InitCrownCollect();
+
+	// 伊蘇 6
+	InitTwysiosCollect();
 }
