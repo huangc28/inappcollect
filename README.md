@@ -10,7 +10,22 @@
 - 哈利波特
 - 楓之谷R
 - 放置英雄
-- 伊蘇 6
+- 伊蘇 6 (Extract to an independent tweak)
+
+## Extra framework 問題
+
+Some games implement their payment program logic in framework package. In this case, We'll need to provide the framwork package to Theos at path `$THEOS/lib/` and specify framework path in `Makefile` to hook to class method properly for those games.
+
+**Makefile**
+
+```
+inappcollect_EXTRA_FRAMEWORKS = UnityFramework_twysios
+inappcollect_FILES = Tweak.xm
+```
+
+However, the above approach may cause problem to those game hooks that don't need framework. Thus, those games with framework should be extracted to independent tweak.
+
+
 
 ## TODOs
 

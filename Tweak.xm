@@ -8,7 +8,8 @@
 #import "src/CallmeBigBossCollect.h"
 #import "src/MapleStory.h"
 #import "src/CrownCollect.h"
-#import "src/TwysiosCollect.h"
+// #import "src/TwysiosCollect.h"
+#import "src/TdjCollect.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started");
@@ -44,5 +45,8 @@
 	InitCrownCollect();
 
 	// 伊蘇 6
-	InitTwysiosCollect();
+	// InitTwysiosCollect();
+
+	// 天地劫
+	InitTdjCollect();
 }
