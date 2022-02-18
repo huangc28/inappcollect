@@ -2,13 +2,14 @@
 
 #import "../UncleTuuCollectorCore/CollectorCore.h"
 
-%group TwysiosCollect
+%group MighttcCollect
+%hook InAppPurchaseController
+- (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response {
+	NSLog(@"DEBUG* InAppPurchaseController");
 
-%hook FBSDKPaymentProductRequestor
-- (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response{
 	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
-	if ([bundleIdentifier isEqualToString:@"com.mover.twysios"]) {
+	if ([bundleIdentifier isEqualToString:@"jp.co.koeitecmo.a-mighttc"]) {
 		if ([response.products count] <= 0) {
 			%orig;
 
@@ -25,7 +26,7 @@
 
 			[
 				collector
-					collectWithCustomedAlert :prod.productIdentifier
+					collect									 :prod.productIdentifier
 					bundleID								 :bundleIdentifier
 					prodName								 :prod.localizedTitle
 					prodDesc								 :prod.localizedDescription
@@ -37,10 +38,11 @@
 
 	%orig;
 }
-%end
 
 %end
+%end
 
-extern "C" void InitTwysiosCollect() {
-	%init(TwysiosCollect);
+
+extern "C" void InitMighttcCollect() {
+	%init(MighttcCollect);
 }

@@ -10,6 +10,7 @@
 #import "src/CrownCollect.h"
 // #import "src/TwysiosCollect.h"
 #import "src/TdjCollect.h"
+#import "src/MighttcCollect.h"
 
 %ctor {
 	NSLog(@"DEBUG* inapp collect started");
@@ -49,4 +50,7 @@
 
 	// 天地劫
 	InitTdjCollect();
+
+	// 三國志 霸道
+	InitMighttcCollect();
 }
