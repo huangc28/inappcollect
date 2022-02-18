@@ -5,8 +5,6 @@
 %group MighttcCollect
 %hook InAppPurchaseController
 - (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response {
-	NSLog(@"DEBUG* InAppPurchaseController");
-
 	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
 	if ([bundleIdentifier isEqualToString:@"jp.co.koeitecmo.a-mighttc"]) {

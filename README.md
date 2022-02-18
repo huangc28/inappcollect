@@ -11,6 +11,7 @@
 - 楓之谷R
 - 放置英雄
 - 伊蘇 6 (Extract to an independent tweak)
+- 三國志 霸道
 
 ## Extra framework 問題
 
