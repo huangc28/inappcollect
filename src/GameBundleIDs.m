@@ -7,3 +7,4 @@ NSString * const LineageW = @"com.ncsoft.lineagew";
 NSString * const HarryPotter = @"com.netease.harrypotter.tw";
 NSString * const Mbtw = @"com.garena.game.mbmtw";
 NSString * const Crown = @"com.woobest.crown.igat";
+NSString * const Ennt = @"com.netmarble.ennt";

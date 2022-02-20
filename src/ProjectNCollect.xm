@@ -2,13 +2,14 @@
 
 #import "../UncleTuuCollectorCore/CollectorCore.h"
 
-%group TdjCollect
+#import "GameBundleIDs.h"
 
-%hook RMProductsRequestDelegate
+%group ProjectNCollect
+%hook  IAP
 - (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response {
 	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
-	if ([bundleIdentifier isEqual:@"com.gamebeans.tdj"]) {
+	if ([bundleIdentifier isEqual:Ennt]) {
 		if ([response.products count] <= 0) {
 			%orig;
 
@@ -39,10 +40,8 @@
 	%orig;
 }
 %end
-
 %end
 
-
-extern "C" void InitTdjCollect() {
-	%init(TdjCollect);
+extern "C" void InitProjectNCollect() {
+	%init(ProjectNCollect);
 }
