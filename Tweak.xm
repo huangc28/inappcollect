@@ -8,7 +8,6 @@
 #import "src/CallmeBigBossCollect.h"
 #import "src/MapleStory.h"
 #import "src/CrownCollect.h"
-// #import "src/TwysiosCollect.h"
 #import "src/TdjCollect.h"
 #import "src/MighttcCollect.h"
 
@@ -44,9 +43,6 @@
 
 	// 放置英雄
 	InitCrownCollect();
-
-	// 伊蘇 6
-	// InitTwysiosCollect();
 
 	// 天地劫
 	InitTdjCollect();

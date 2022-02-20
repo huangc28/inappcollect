@@ -7,7 +7,6 @@ TWEAK_NAME = inappcollect
 
 inappcollect_FRAMEWORKS = StoreKit UIKit
 
-# inappcollect_EXTRA_FRAMEWORKS = UnityFramework_twysios
 inappcollect_FILES = Tweak.xm $\
 	$(wildcard ./UncleTuuCollectorCore/*.m) $\
 	$(wildcard ../SharedLibraries/*.m) $\
