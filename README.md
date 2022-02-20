@@ -12,6 +12,7 @@
 - 放置英雄
 - 天地劫
 - 三國志 霸道
+- 二之國
 
 ## Extra framework 問題
 
@@ -25,8 +26,6 @@ inappcollect_FILES = Tweak.xm
 ```
 
 However, the above approach may cause problem to those game hooks that don't need framework. Thus, those games with framework should be extracted to independent tweak.
-
-
 
 ## TODOs
 
