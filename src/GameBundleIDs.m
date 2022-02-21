@@ -8,3 +8,6 @@ NSString * const HarryPotter = @"com.netease.harrypotter.tw";
 NSString * const Mbtw = @"com.garena.game.mbmtw";
 NSString * const Crown = @"com.woobest.crown.igat";
 NSString * const Ennt = @"com.netmarble.ennt";
+NSString * const Eosm = @"com.bluepotiongames.eosm.appstore.tw";
+NSString * const Dzg = @"com.gm99.dzg.ios";
+

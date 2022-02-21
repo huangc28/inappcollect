@@ -1,33 +1,42 @@
+#import "StoreKit/StoreKit.h"
+
+#import "../UncleTuuCollectorCore/CollectorCore.h"
+#import "GameBundleIDs.h"
+
 %group CallmeBigBossCollect
 
-%hook APMProductsRequest
-- (void)productsRequest:(id)arg1 didReceiveResponse:(id)arg2 {
-	NSLog(@"DEBUG* APMProductsRequest productsRequest");
-
-	%orig;
-}
-%end
-
-%hook FBSDKPaymentProductRequestor
-- (void)productsRequest:(id)arg1 didReceiveResponse:(id)arg2 {
-	NSLog(@"DEBUG* FBSDKPaymentProductRequestor productsRequest");
-
-	%orig;
-}
-%end
-
 %hook RVProductManager
-- (void)productsRequest:(id)arg1 didReceiveResponse:(id)arg2 {
+- (void)productsRequest:(id)arg1 didReceiveResponse:(SKProductsResponse *)response {
 	NSLog(@"DEBUG* RVProductManager productsRequest");
+	NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
-	%orig;
-}
-%end
+	if ([bundleIdentifier isEqual:Dzg]) {
+		if ([response.products count] <= 0) {
+			%orig;
 
-%hook RVSDKProductRequest
-- (void)productsRequest:(id)arg1 didReceiveResponse:(id)arg2 {
-	NSLog(@"DEBUG* RVSDKProductRequest productsRequest");
+			return;
+		}
 
+		SKProduct *prod = response.products[0];
+
+		// Perform operation only if bundleIdentifier equals
+		CollectorCore *collector = [CollectorCore sharedInstance];
+
+		// if product info has been collected, skip API request.
+		if ([collector hasProdCollected:prod.productIdentifier] == NO) {
+			[collector markCollectedProdToDictionary:prod.productIdentifier];
+
+			[
+				collector
+					collect :prod.productIdentifier
+					bundleID:bundleIdentifier
+					prodName:prod.localizedTitle
+					prodDesc:prod.localizedDescription
+					price   :prod.price
+					quantity:1
+			];
+		}
+	}
 	%orig;
 }
 %end
